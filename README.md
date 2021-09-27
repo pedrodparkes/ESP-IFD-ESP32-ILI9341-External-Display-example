@@ -1,4 +1,4 @@
-This example demonstrates how to use ESP32 with esp-idf and ILI9341-based display.
+This example demonstrates how to connect ILI9341-based display to modern ESP32 fork - TTGO-tDisplay in ESP-IDF.
 I use [ESP32_TFT_library](https://github.com/jeremyjh/ESP32_TFT_library.git). 
 
 Alternatively you can use [LVGL ported to ESP32 including various display and touchpad drivers](https://github.com/lvgl/lv_port_esp32) 
@@ -35,3 +35,6 @@ Use TTGO T-DISPLAY for example
 ```idf.py -p /dev/tty.SLAB_USBtoUART clean build flash monitor```	
 
 ***4. Have fun!***
+
+![TTGO-tDisplay PinOut](ttgo_t_display.jpeg?raw=true "TTGO-tDisplay PinOut")
+![ili9341 Display PinOut](ili9341.png?raw=true "ili9341 Display PinOut")
