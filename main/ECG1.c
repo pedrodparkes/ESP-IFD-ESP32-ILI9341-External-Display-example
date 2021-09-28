@@ -17,6 +17,8 @@
 #include "tft.h"
 #include "spiffs_vfs.h"
 
+#include "math.h"
+
 #ifdef CONFIG_EXAMPLE_USE_WIFI
 
 #include "esp_wifi.h"
@@ -364,6 +366,85 @@ static void test_times() {
         }
         Wait(GDEMO_INFO_TIME);
     }
+}
+
+struct dot
+{
+    uint16_t x_dot_location;
+    uint16_t y_dot_location;
+};
+//void setdotarray(struct dot *pdot, uint16_t size_x, uint16_t size_y, uint16_t num_points); // Function prototype
+//void printdotarray(struct dot*, uint16_t);
+
+void setdotarray(struct dot *pdot, uint16_t size_x, uint16_t size_y, uint16_t num_points)
+{
+    float pi = atan(1)*4;
+    uint16_t R = (size_y - size_y*0.05)/2;
+    printf(tmp_buff, "R = %d", R);
+    uint16_t rectangle_center_x=(0+size_x)/2;
+    uint16_t rectangle_center_y=(0+size_y)/2;
+    printf(tmp_buff, "rectangle_center_x = %d; rectangle_center_y = %d;", rectangle_center_x, rectangle_center_y);
+    printf(tmp_buff, "ARRAY INIT");
+    for(uint16_t i = 0;i < num_points;i++)
+    {
+        pdot[i].x_dot_location = (cos(i*2*pi/num_points)*R)+rectangle_center_x;
+        pdot[i].y_dot_location = (sin(i*2*pi/num_points)*R)+rectangle_center_y;
+    }
+    printf(tmp_buff, "ARRAY INIT DONE");
+}
+
+void printdotarray(struct dot *pdot, uint16_t num_dots)
+{
+    printf(tmp_buff, "ARRAY PRINT");
+    for(uint16_t j = 0;j < num_dots;j++)
+    {
+        printf(tmp_buff, "x_dot_location:%d \t y_dot_location: %d", pdot[j].x_dot_location, pdot[j].y_dot_location);
+    }
+    printf(tmp_buff, "ARRAY PRINT DONE");
+}
+
+static void generate_mandala(uint16_t size_x, uint16_t size_y, uint16_t num_points, uint8_t num_iterance, uint8_t iterance_shift) {
+    uint32_t end_time = clock() + GDEMO_TIME*300;
+    if (num_iterance == 0) { num_iterance = 1;}
+    disp_header("DRAW MANDALA");
+    num_points=60; num_iterance=6; iterance_shift=5; size_y=240; size_x=240;
+    printf(tmp_buff, "num_points = %d; num_iterance = %d; iterance_shift = %d;", num_points, num_iterance, iterance_shift);
+    float angle = 360 / num_points;
+    struct dot dotarray[num_points];
+    setdotarray(dotarray, size_x, size_y, num_points);
+    for (uint16_t k = 0; k < num_points; k++) {
+        TFT_drawPixel(dotarray[k].x_dot_location, dotarray[k].y_dot_location, random_color(), 1);
+    }
+//    while ((clock() < end_time) && (Wait(0))) {
+        int j;
+        color_t color=random_color();
+        for (int turn = 0; turn <= num_iterance; turn++) {
+//            color=random_color();
+            vTaskDelay(10);
+            for (int i = 0; i < num_points; i++) {
+                j = ((i + iterance_shift * turn) * 2) % num_points;
+                vTaskDelay(5);
+                TFT_drawLine(dotarray[i].x_dot_location, dotarray[i].y_dot_location, dotarray[j].x_dot_location,dotarray[j].y_dot_location, color);
+            }
+        }
+//    }
+
+
+//    for turn in range(num_iterance):
+//        for i in range(num_points):
+//            j = ((i+iterance_shift*turn)*2) % num_points
+//
+//            mult_r, mult_g, mult_b = 255-turn, 1, 255-(j+1)
+//
+//            print(str(mult_r) + "\t" + str(mult_g) + "\t" + str(mult_b))
+//            pen = agg.Pen((mult_r,mult_g,mult_b), width=1, opacity=150)
+//            res.line((points[i][0], points[i][1], points[j][0], points[j][1]), pen)
+
+
+
+
+
+    Wait(-GDEMO_INFO_TIME*10);
 }
 
 // Image demo
@@ -1079,9 +1160,8 @@ void tft_demo() {
             printf("\r\n==========================================\r\nDisplay: %s: %s %d,%d %s\r\n\r\n",
                    dtype, tmp_buff, tft_width, tft_height, ((tft_gray_scale) ? "Gray" : "Color"));
         }
-
+        generate_mandala(200, 200, 200, 1, 1);
         disp_header("Welcome to ESP32");
-
         test_times();
 //        font_demo();
         line_demo();
