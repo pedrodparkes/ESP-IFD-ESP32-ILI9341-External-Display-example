@@ -415,7 +415,6 @@ static void generate_mandala(uint16_t size_x, uint16_t size_y, uint16_t num_poin
     for (uint16_t k = 0; k < num_points; k++) {
         TFT_drawPixel(dotarray[k].x_dot_location, dotarray[k].y_dot_location, random_color(), 1);
     }
-//    while ((clock() < end_time) && (Wait(0))) {
         int j;
         color_t color=random_color();
         for (int turn = 0; turn <= num_iterance; turn++) {
@@ -427,23 +426,6 @@ static void generate_mandala(uint16_t size_x, uint16_t size_y, uint16_t num_poin
                 TFT_drawLine(dotarray[i].x_dot_location, dotarray[i].y_dot_location, dotarray[j].x_dot_location,dotarray[j].y_dot_location, color);
             }
         }
-//    }
-
-
-//    for turn in range(num_iterance):
-//        for i in range(num_points):
-//            j = ((i+iterance_shift*turn)*2) % num_points
-//
-//            mult_r, mult_g, mult_b = 255-turn, 1, 255-(j+1)
-//
-//            print(str(mult_r) + "\t" + str(mult_g) + "\t" + str(mult_b))
-//            pen = agg.Pen((mult_r,mult_g,mult_b), width=1, opacity=150)
-//            res.line((points[i][0], points[i][1], points[j][0], points[j][1]), pen)
-
-
-
-
-
     Wait(-GDEMO_INFO_TIME*10);
 }
 
