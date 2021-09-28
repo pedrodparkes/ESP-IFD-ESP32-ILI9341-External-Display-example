@@ -1093,7 +1093,7 @@ void tft_demo() {
         triangle_demo();
         poly_demo();
         pixel_demo();
-        disp_images();
+//        disp_images();
         touch_demo();
 
         _demo_pass++;
